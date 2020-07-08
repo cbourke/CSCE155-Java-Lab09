@@ -1,0 +1,222 @@
+\documentclass[12pt]{scrartcl}
+
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.25cm}
+
+\usepackage{graphicx}
+
+\usepackage{xcolor}
+
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\usepackage{hyperref}
+\hypersetup{
+  letterpaper,
+  colorlinks,
+  linkcolor=red,
+  citecolor=darkgreen,
+  menucolor=darkred,
+  urlcolor=blue,
+  pdfpagemode=none,
+  pdftitle={CS1 - Lab 9.0 - Java},
+  pdfauthor={Christopher M. Bourke},
+  pdfkeywords={}
+}
+
+\definecolor{MyDarkBlue}{rgb}{0,0.08,0.45}
+\definecolor{MyDarkRed}{rgb}{0.45,0.08,0}
+\definecolor{MyDarkGreen}{rgb}{0.08,0.45,0.08}
+
+\definecolor{mintedBackground}{rgb}{0.95,0.95,0.95}
+\definecolor{mintedInlineBackground}{rgb}{.90,.90,1}
+
+%\usepackage{newfloat}
+\usepackage[newfloat=true]{minted}
+\setminted{mathescape,
+               linenos,
+               autogobble,
+               frame=none,
+               framesep=2mm,
+               framerule=0.4pt,
+               %label=foo,
+               xleftmargin=2em,
+               xrightmargin=0em,
+               startinline=true,  %PHP only, allow it to omit the PHP Tags *** with this option, variables using dollar sign in comments are treated as latex math
+               numbersep=10pt, %gap between line numbers and start of line
+               style=default, %syntax highlighting style, default is "default"
+               			    %gallery: http://help.farbox.com/pygments.html
+			    	    %list available: pygmentize -L styles
+               bgcolor=mintedBackground} %prevents breaking across pages
+               
+\setmintedinline{bgcolor={mintedBackground}}
+\setminted[text]{bgcolor={mintedBackground},linenos=false,autogobble,xleftmargin=1em}
+%\setminted[php]{bgcolor=mintedBackgroundPHP} %startinline=True}
+\SetupFloatingEnvironment{listing}{name=Code Sample}
+\SetupFloatingEnvironment{listing}{listname=List of Code Samples}
+
+
+\title{CSCE 155 - Java}
+\subtitle{Lab 9.0 - Strings}
+\author{~}
+\date{~}
+
+\begin{document}
+
+\maketitle
+
+\section*{Prior to Lab}
+
+Before attending this lab:
+\begin{enumerate}
+  \item Read and familiarize yourself with this handout.
+  \item Review Oracle's documentation about Strings in Java: 
+  	\url{http://docs.oracle.com/javase/tutorial/java/data/strings.html}
+\end{enumerate}
+
+\section*{Peer Programming Pair-Up}
+
+To encourage collaboration and a team environment, labs will be
+structured in a \emph{pair programming} setup.  At the start of
+each lab, you will be randomly paired up with another student 
+(conflicts such as absences will be dealt with by the lab instructor).
+One of you will be designated the \emph{driver} and the other
+the \emph{navigator}.  
+
+The navigator will be responsible for reading the instructions and
+telling the driver what to do next.  The driver will be in charge of the
+keyboard and workstation.  Both driver and navigator are responsible
+for suggesting fixes and solutions together.  Neither the navigator
+nor the driver is ``in charge.''  Beyond your immediate pairing, you
+are encouraged to help and interact and with other pairs in the lab.
+
+Each week you should alternate: if you were a driver last week, 
+be a navigator next, etc.  Resolve any issues (you were both drivers
+last week) within your pair.  Ask the lab instructor to resolve issues
+only when you cannot come to a consensus.  
+
+Because of the peer programming setup of labs, it is absolutely 
+essential that you complete any pre-lab activities and familiarize
+yourself with the handouts prior to coming to lab.  Failure to do
+so will negatively impact your ability to collaborate and work with 
+others which may mean that you will not be able to complete the
+lab.  
+
+\section{Lab Objectives \& Topics}
+At the end of this lab you should be familiar with the following
+\begin{itemize}
+  \item Understand the way Java implements and handles Strings
+  \item Use methods of String and understand the difference between 
+  	classes \mintinline{java}{String} and \mintinline{java}{StringBuilder}
+\end{itemize}
+
+\section{Background}
+
+A string in Java is a collection of characters regarded and handled as 
+a single unit.  The \mintinline{java}{String} class is used to represent 
+strings, so they are objects not primitive types.  Like other objects, 
+strings have their own set of constructors and methods.  When used
+with methods, strings are passed by reference not by value.  However, 
+unlike most other objects Strings can be instantiated without using 
+the \mintinline{java}{new} operator.  For example, the following lines of 
+code are all valid string declarations:
+
+\begin{minted}{java}
+String myString = "This is the string lab for CSE 155";
+String myOtherString = new String( "This is the string lab for CSE 155" );
+String anotherString = null;
+String emptyString = "";
+\end{minted}
+
+The reference variable \mintinline{java}{myString} refers to a string literal 
+and \mintinline{java}{anotherString} is a reference that points to \mintinline{java}{null}.
+However, it can still be used to eventually reference a valid \mintinline{java}{String}
+object.  The reference variable \mintinline{java}{emptyString} does 
+\emph{not} point to \mintinline{java}{null}, it is the empty string, and simply 
+points to a \mintinline{java}{String} object that has no characters.  In Java 
+strings are immutable.  That is, once created their contents cannot be changed.  
+\mintinline{java}{StringBuilder} is a \mintinline{java}{String}-like class that 
+provides methods to change character contents.
+
+See the Java API for a full description of the \mintinline{java}{String} 
+and \mintinline{java}{StringBuilder} classes: 
+\begin{itemize}
+  \item \url{http://docs.oracle.com/javase/6/docs/api/java/lang/String.html}.
+  \item \url{http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/StringBuilder.html}
+\end{itemize}
+
+\section{Activities}
+
+This lab will familiarize you with some of these concepts.  In particular, you 
+will complete a program that implements a common children?s game, horse 
+(also known as hangman).  In this game, an English word is chosen at random 
+and its characters hidden.  The player takes turns by guessing a letter; each 
+instance (if any) of the guessed letter is revealed.  If the user is able to guess 
+the word before a certain number of guessed letters then they win.  If they run 
+out of guesses then they lose.
+
+Most of the game mechanics have been implemented for you.  However, you 
+will need to complete the game by implementing several methods used by the 
+game to manipulate and compare Strings.  Clone the project for this lab from
+GitHub using the following URL: \url{https://github.com/cbourke/CSCE155-Java-Lab09}.
+
+\subsection{Implementing String Manipulation Methods}
+
+\begin{enumerate}
+  \item Examine the content of \mintinline{text}{ObtainInput.java} and 
+  	\mintinline{text}{PlayHorse.java} but do not change them.
+  \item Open \mintinline{text}{HorseGame.java} in Eclipse.  There are several 
+	methods already fully implemented in this file.  Your task for this lab is to 
+	implement the following four methods:
+	\begin{itemize}
+	  \item \mintinline{java}{initializeBlankString()} - This method takes one variable 
+	  as input: a \mintinline{java}{String} variable containing the secret word.  It 
+	  should return nothing.   The method should alter the \mintinline{java}{StringBuilder} 
+	  instance so that it is of equal length to the secret word and set all of its values to 
+	  an underscore.  The \mintinline{java}{StringBuilder} instance will slowly reveal 
+	  correctly guessed letters
+	  \item \mintinline{java}{printWithSpaces()} - This method will print the contents 
+	  of the \mintinline{java}{StringBuilder} instance with spaces between each character.   
+	  The method requires no input and should return nothing.
+	  \item \mintinline{java}{revealGuessedLetter()} - This method will take a 
+	  \mintinline{java}{String} (the secret word) and a character (the user's guess) as input.   
+	  The method should alter the \mintinline{java}{StringBuilder} instance in the 
+	  following way: for every position in the secret word that contains the character 
+	  passed in as the second argument, change the same position in the 
+	  \mintinline{java}{StringBuilder} instance to that character.  For example, if the 
+	  secret word is: \mintinline{java}{"dinosaur"} and the \mintinline{java}{StringBuilder}
+	  variable is: \mintinline{java}{"________"} and the character passed is: \mintinline{java}{a}
+	  the method should alter the \mintinline{java}{StringBuilder} so that it becomes 
+	  \mintinline{java}{"_____a__"}.  The method should return \mintinline{java}{true} 
+	  if any letters were changed and \mintinline{java}{false} otherwise.
+	  \item \mintinline{java}{checkGuess()} - This method checks if the 
+	  \mintinline{java}{StringBuilder} instance is the same as the secret word string.  
+	  The method should return \mintinline{java}{true} if they are, and 
+	  \mintinline{java}{false} otherwise.
+	\end{itemize}
+  \item Complete the implementation of the methods, and run the program in Eclipse.
+  \item Answer the questions on your worksheet.
+\end{enumerate}
+
+\section{Advanced Activity (Optional)}
+
+If strings are immutable, and their contents cannot be changed, why does the 
+following code execute as expected?  
+
+\begin{minted}{java}
+String myString = "This week we?re studying Strings!"; 
+System.out.println("myString contains: " + myString);
+myString = "Next week we?re studying file I/O!";
+System.out.println("myString now contains: " + myString);
+\end{minted}
+
+Did the contents of \mintinline{java}{myString} change?
+Suppose we add another line of code as follows:
+
+\mintinline{java}{System.out.println( "myString now contains: "+ myString.toUpperCase() );}
+
+What did the above line of code do?  Did it also change the contents 
+of \mintinline{java}{myString}?
+
+\end{document}
