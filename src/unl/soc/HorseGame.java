@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 public class HorseGame {
 
+	//NOTE: these are *member variables* of the class.  You can access
+	//      them using the `this` keyword in any of this class's methods.
+	//      Example: 
+	//         this.revealedLetters = new StringBuilder();
 	private StringBuilder revealedLetters;
 	private String secretWord;
 
@@ -25,7 +29,7 @@ public class HorseGame {
 		boolean won = false;
 		int numBadGuesses = 0;
 
-		initializeBlankString(secretWord);
+		initializeBlankString();
 
 		System.out.print("Please enter the number of allowed (bad) guesses: ");
 		int allowedGuesses = askUser.nextInt();
@@ -40,7 +44,7 @@ public class HorseGame {
 			userGuess = askUser.next();
 			char guess = userGuess.charAt(0);
 
-			charRevealed = revealGuessedLetter(secretWord, guess);
+			charRevealed = revealGuessedLetter(guess);
 
 			won = checkGuess();
 
@@ -56,10 +60,10 @@ public class HorseGame {
 
 		if (won) {
 			System.out.println("\nCongratulations!");
-			System.out.println("You correctly guessed the word: " + secretWord + "!");
+			System.out.println("You correctly guessed the word: " + this.secretWord + "!");
 		} else {
 			System.out.println("\nSorry, you've run out of guesses.");
-			System.out.println("The correct word was: " + secretWord);
+			System.out.println("The correct word was: " + this.secretWord);
 		}
 
 	}
@@ -70,10 +74,13 @@ public class HorseGame {
 	 * 
 	 * @param word A String, the secret word being concealed.
 	 */
-	private void initializeBlankString(String secretWord) {
+	private void initializeBlankString() {
 
-		// TODO: Initialize the revealedLetters StringBuilder to the secret word
-		// here and set each char to an underscore ( '_' )
+		// TODO: Initialize the revealedLetters StringBuilder here;
+		//       make it so that revealedLetters consists of *only*
+		//       underscores and has the same length as secretWord
+		//       Example: if secretWord is "computer", revealedLetters
+		//       should be "_______" (8 underscores).
 	}
 
 	/**
@@ -123,11 +130,10 @@ public class HorseGame {
 	 * Reveals a correctly guessed letter from the user, while keeping the rest as
 	 * blank underscores.
 	 * 
-	 * @param secret The secret word the user must guess.
 	 * @param guess  The char value guessed by the user.
-	 * @return True if a guessed letter was revealed, false otherwise.
+	 * @return <code>true</code> if a guessed letter was revealed, <code>false</code> otherwise.
 	 */
-	private boolean revealGuessedLetter(String secretWord, char guess) {
+	private boolean revealGuessedLetter(char guess) {
 
 		boolean found = false;
 
@@ -143,7 +149,7 @@ public class HorseGame {
 	/**
 	 * Checks if the user has correctly guessed the secret word.
 	 * 
-	 * @return <code>true</code> if the user has won the game, <code>false</code>t
+	 * @return <code>true</code> if the user has won the game, <code>false</code>
 	 *         otherwise.
 	 */
 	private boolean checkGuess() {
